@@ -13,4 +13,11 @@ model User {
   username String @unique
   name String 
   password String
+  role Role @default(STUDENT)
+}
+
+
+enum Role{
+  STUDENT
+  RECRUITER
 }

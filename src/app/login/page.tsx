@@ -127,7 +127,7 @@ export default function AuthForm() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-66px)] items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
+    <div className="flex min-h-[calc(100vh-66px)] items-center justify-center bg-[#08040b] p-4">
       <div className="w-full max-w-md rounded-2xl bg-gray-800/30 backdrop-blur-xl">
         <div className="p-8">
           {/* Header */}

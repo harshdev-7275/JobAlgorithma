@@ -29,16 +29,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-black text-white w-full h-full py-4 border-b-gray-600 border-b-2 sticky top-0 z-50">
+    <nav className="bg-[#08040b] text-white w-full h-full py-4 border-b-gray-600 border-b-2 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         <div className="logo flex items-center gap-2">
           <Compass size={30} className={`${isLogoLoading && "animate-spin"}`} />
           <Link href={"#"} className="text-2xl font-bold select-none">
-            HirePoint
+          JobAlgorithma
           </Link>
         </div>
         {status === "authenticated" && (
-          <div className="navigation flex items-center gap-4 text-sm">
+          <div className="navigation flex items-center gap-9 text-sm">
             <Link href="/">Find Job</Link>
             <Link href="/">Messages</Link>
             <Link href="/">Hiring</Link>
@@ -47,13 +47,13 @@ export default function Navbar() {
           </div>
         )}
         <div className="flex items-center gap-20">
-          <div className="location flex items-center gap-0.5">
+          {/* <div className="location flex items-center gap-0.5">
             <MapPin size={18} />
             <span>India</span>
-          </div>
+          </div> */}
           <div className="settings flex items-center gap-2">
             {status === "authenticated" && (
-              <Link href="/" className="dp">
+
                 <Image
                   src={userImage}
                   alt="user"
@@ -61,7 +61,7 @@ export default function Navbar() {
                   height={40}
                   className="rounded-full"
                 />
-              </Link>
+
             )}
             {status === "authenticated" && (
               <DropdownMenu>
@@ -85,9 +85,11 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <Link href="/" className="p-1 border rounded-full">
+            {
+              status === "authenticated" && (
               <Bell size={18} className="" />
-            </Link>
+              )
+            }
           </div>
         </div>
       </div>
