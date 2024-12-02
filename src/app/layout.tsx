@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import {ABeeZee} from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Providers } from "@/lib/providers";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+const geistSans = ABeeZee({
+  subsets: ["latin"],
   variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+  weight: "400",
+})
 
 export const metadata: Metadata = {
   title: "JobAlgorithma",
@@ -28,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
+        className={`${geistSans.variable} ${geistSans.variable} antialiased bg-white text-black`}
       >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
         <Providers>
           <Navbar />
           {children}
         </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

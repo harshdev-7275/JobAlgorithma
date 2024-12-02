@@ -2,6 +2,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -9,15 +10,30 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  username String @unique
-  name String 
-  password String
-  role Role @default(STUDENT)
+  id        String  @id @default(uuid())
+  username  String  @unique
+  name      String
+  password  String
+  role      Role
+  jobs      Job[]
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  title       String
+  designation String   
+  location    String
+  description String?
+  salary      Int
+  companyName String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
 }
 
 
-enum Role{
+enum Role {
   STUDENT
   RECRUITER
 }

@@ -9,6 +9,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Loader2, User, Lock, FolderPen } from "lucide-react";
 import useLogoLoadingStore from "@/stores/logoLoading";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AuthForm() {
   const { data: session, status } = useSession();
@@ -16,12 +23,13 @@ export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const {setIsLoadingLogo} = useLogoLoadingStore()
+  const { setIsLoadingLogo } = useLogoLoadingStore();
   const [formData, setFormData] = useState({
     username: "",
     name: "",
     password: "",
     confirmPassword: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -31,9 +39,15 @@ export default function AuthForm() {
   }, [status, router]);
 
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    (e: React.ChangeEvent<HTMLInputElement> | string, name?: string) => {
+      if (typeof e === "string" && name) {
+        // Handle Select component
+        setFormData((prev) => ({ ...prev, [name]: e }));
+      } else {
+        // Handle Input component
+        const { name: inputName, value } = e.target as HTMLInputElement;
+        setFormData((prev) => ({ ...prev, [inputName]: value }));
+      }
       if (error) setError("");
     },
     [error]
@@ -47,7 +61,7 @@ export default function AuthForm() {
     }
 
     setIsLoading(true);
-    setIsLoadingLogo(true)
+    setIsLoadingLogo(true);
     setError("");
     try {
       const response = await fetch("/api/auth/signup", {
@@ -57,6 +71,7 @@ export default function AuthForm() {
           username: formData.username,
           name: formData.name,
           password: formData.password,
+          role: (formData.role).toUpperCase(),
         }),
       });
 
@@ -72,16 +87,14 @@ export default function AuthForm() {
       formData.name = "";
       formData.password = "";
       formData.confirmPassword = "";
-      setIsLogin(true); 
-
+      setIsLogin(true);
     } catch (err) {
       formData.password = "";
       formData.confirmPassword = "";
       setError("Something went wrong. Please try again.");
-
     } finally {
       setIsLoading(false);
-      setIsLoadingLogo(false)
+      setIsLoadingLogo(false);
     }
   };
 
@@ -94,7 +107,7 @@ export default function AuthForm() {
     }
 
     setIsLoading(true);
-    setIsLoadingLogo(true)
+    setIsLoadingLogo(true);
     setError("");
     try {
       const result = await signIn("credentials", {
@@ -114,7 +127,7 @@ export default function AuthForm() {
       formData.password = "";
     } finally {
       setIsLoading(false);
-      setIsLoadingLogo(false)
+      setIsLoadingLogo(false);
     }
   };
 
@@ -206,6 +219,24 @@ export default function AuthForm() {
                   />
                 </div>
               </div>
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-gray-300">
+                    Are you a
+                  </Label>
+                  <Select
+                    onValueChange={(value) => handleInputChange(value, "role")}
+                  >
+                    <SelectTrigger className="w-full border-gray-700 bg-gray-800/50 pl-10 text-white placeholder:text-gray-500 focus:border-gray-500 focus:ring-gray-500">
+                      <SelectValue placeholder="Select Role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="student">Student</SelectItem>
+                      <SelectItem value="recruiter">Recruiter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* Confirm Password */}
               {!isLogin && (

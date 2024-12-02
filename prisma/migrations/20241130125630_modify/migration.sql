@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Job" ADD COLUMN     "userId" TEXT,
+ALTER COLUMN "companyName" SET DATA TYPE TEXT;
+
+-- AddForeignKey
+ALTER TABLE "Job" ADD CONSTRAINT "Job_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
