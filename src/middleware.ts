@@ -2,10 +2,13 @@ import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   pages: {
-    signIn: "/login", // Redirect to this page if not authenticated
+    signIn: "/", // Redirect to this page if not authenticated
   },
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|favicon.ico).*)"], // Apply to all routes except /api, _next/static, and favicon
+  matcher: [
+    "/dashboard/:path*", // Apply to all routes inside the /dashboard directory
+    "/((?!api|_next/static|favicon.ico).*)" // Exclude /api, _next/static, and favicon.ico
+  ],
 };

@@ -1,6 +1,5 @@
-"use client";
-
-import React, { useEffect, useState, useCallback } from "react";
+"use client"
+import React, { useEffect, useState, useCallback, ChangeEvent } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
@@ -17,8 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function AuthForm() {
-  const { data: session, status } = useSession();
+export default function AuthForm({ isLearningClicked }: { isLearningClicked: boolean }) {
+    const {  status } = useSession();
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,19 +38,20 @@ export default function AuthForm() {
   }, [status, router]);
 
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement> | string, name?: string) => {
+    (e: ChangeEvent<HTMLInputElement> | string, name?: string) => {
       if (typeof e === "string" && name) {
         // Handle Select component
         setFormData((prev) => ({ ...prev, [name]: e }));
-      } else {
+      } else if (typeof e !== "string") {
         // Handle Input component
-        const { name: inputName, value } = e.target as HTMLInputElement;
+        const { name: inputName, value } = e.target;
         setFormData((prev) => ({ ...prev, [inputName]: value }));
       }
       if (error) setError("");
     },
     [error]
   );
+  
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +89,7 @@ export default function AuthForm() {
       formData.confirmPassword = "";
       setIsLogin(true);
     } catch (err) {
+      console.error(err);
       formData.password = "";
       formData.confirmPassword = "";
       setError("Something went wrong. Please try again.");
@@ -98,38 +99,41 @@ export default function AuthForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!isLogin) {
-      await handleRegister(e);
-      return;
-    }
+  if (!isLogin) {
+    await handleRegister(e);
+    return;
+  }
 
-    setIsLoading(true);
-    setIsLoadingLogo(true);
-    setError("");
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        callbackUrl: "/",
-        username: formData.username,
-        password: formData.password,
-      });
+  setIsLoading(true);
+  setIsLoadingLogo(true);
+  setError("");
 
-      if (!result?.ok) {
-        setError("Authentication failed");
-      }
-      formData.username = "";
-      formData.password = "";
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-      formData.password = "";
-    } finally {
-      setIsLoading(false);
-      setIsLoadingLogo(false);
-    }
-  };
+  try {
+    console.log("isLearningClicked", isLearningClicked);
+    let callbackUrl = "/"
+    if(isLearningClicked=== true) callbackUrl = "/dashboard/learning"
+    console.log("callbackUrl", callbackUrl);
+    const result = await signIn("credentials", {
+    //   redirect: false, // We handle the redirect manually
+      callbackUrl,
+      username: formData.username,
+      password: formData.password,
+    });
+
+    console.log("signIn result", result);
+
+   
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Something went wrong");
+  } finally {
+    setIsLoading(false);
+    setIsLoadingLogo(false);
+  }
+};
+
 
   if (status === "loading") {
     return (
@@ -140,7 +144,7 @@ export default function AuthForm() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-66px)] items-center justify-center bg-[#08040b] p-4">
+    <div className="flex min-h-[calc(100vh-66px)] items-center justify-center p-4">
       <div className="w-full max-w-md rounded-2xl bg-gray-800/30 backdrop-blur-xl">
         <div className="p-8">
           {/* Header */}

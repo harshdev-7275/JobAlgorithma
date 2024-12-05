@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 
 import ReactQuill from "react-quill-new";
@@ -61,7 +60,7 @@ const formSchema = z.object({
 export default function CreateJob() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -80,6 +79,7 @@ export default function CreateJob() {
     try {
       console.log("onSubmit job", values);
       const response = await axios.post("/api/recruiter/create-job", values);
+      console.log(response);
       form.reset();
       router.refresh();
     } catch (error) {
@@ -102,7 +102,7 @@ export default function CreateJob() {
                 <Input placeholder="Enter job title" {...field} />
               </FormControl>
               <FormDescription>
-                The title of the job position you're hiring for.
+                The title of the job position you&apos;re hiring for.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -174,7 +174,7 @@ export default function CreateJob() {
                 <Input placeholder="Enter job location" {...field} />
               </FormControl>
               <FormDescription>
-                The location of the job you're hiring for.
+                The location of the job you&apos;re hiring for.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -231,7 +231,7 @@ export default function CreateJob() {
                 <Input type="text" placeholder="Enter job salary" {...field} />
               </FormControl>
               <FormDescription>
-                The salary of the job you're hiring for.
+                The salary of the job you&apos;re hiring for.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -1,5 +1,5 @@
 "use client";
-import { Bell, Compass, Settings } from "lucide-react";
+import {  Compass, Settings } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,9 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { usePathname } from "next/navigation";
+
 export default function Navbar() {
+  const pathname = usePathname();
+
   const { isLogoLoading, setIsLoadingLogo } = useLogoLoadingStore();
   const { status } = useSession();
+  console.log("Path name", pathname)
 
   const handleLogoutHandler = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,7 +32,7 @@ export default function Navbar() {
     }, 2000);
     signOut({ callbackUrl: "/login" });
   };
-
+  
   return (
     <nav className="bg-[#08040b] text-white w-full py-4 border-b-gray-600 border-b-2 sticky top-0 z-50">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
@@ -41,7 +46,7 @@ export default function Navbar() {
 
         {/* Navigation Links */}
         <div className="md:flex flex-wrap items-center hidden justify-center gap-4 md:gap-9 text-lg mt-4 md:mt-0">
-          {status === "authenticated" && (
+          {status === "authenticated" && !pathname.startsWith("/dashboard/learning") && (
             <>
               <Link href="/" className="block">
                 Find Job
@@ -57,6 +62,22 @@ export default function Navbar() {
               </Link>
               <Link href="/" className="block">
                 FAQ
+              </Link>
+            </>
+          )}
+           {status === "authenticated" && pathname.startsWith("/dashboard/learning")  && (
+            <>
+              <Link href="/dashboard/learning" className="block font-light">
+                Dashboard
+              </Link>
+              <Link href="/dashboard/learning/learn" className="block">
+                Learn
+              </Link>
+              <Link href="/dashboard/learning/practice" className="block">
+                Practice
+              </Link>
+              <Link href="/dashboard/learning/mock-test" className="block">
+                Mock Test
               </Link>
             </>
           )}
@@ -95,6 +116,7 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+        
         </div>
       </div>
     </nav>

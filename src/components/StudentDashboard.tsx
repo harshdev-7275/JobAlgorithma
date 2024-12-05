@@ -1,30 +1,21 @@
 import React, { useState } from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { Button } from "./ui/button";
-import DOMPurify from "dompurify";
+
 import { formatMoney } from "@/lib/utils";
 import { MapPin } from "lucide-react";
+import { Job } from "@/app/dashboard/page";
 
-type Job = {
-  id: string;
-  title: string;
-  location: string;
-  description: string;
-  salary: number;
-  companyName: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-};
+
 
 interface StudentDashboardProps {
   jobs: Job[];
 }
 
 const StudentDashboard = ({ jobs }: StudentDashboardProps) => {
-  const [appliedJobId, setAppliedJobId] = useState<string | null>(null);
+  const [appliedJobId, setAppliedJobId] = useState<number | null>(null);
 
-  const applyToJob = (jobId: string) => {
+  const applyToJob = (jobId: number) => {
     if (appliedJobId !== jobId) {
       setAppliedJobId(jobId);
       console.log(`Applied to job with ID: ${jobId}`);

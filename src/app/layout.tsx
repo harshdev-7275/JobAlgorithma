@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   description: "Focusing on job placement through algorithmic learning.",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{

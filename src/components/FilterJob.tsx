@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import {
-  BadgeIndianRupee,
   BriefcaseBusinessIcon,
   IndianRupee,
   MapPin,
@@ -15,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Slider } from "./ui/slider";
 import { Button } from "./ui/button";
 
 type Filters={
@@ -26,7 +24,6 @@ type Filters={
 }
 
 export function FilterJob() {
-  const [salaryRange, setSalaryRange] = React.useState([50000]);
   const [filters, setFilters] = React.useState<Filters>({
     designation: "",
     location: "",

@@ -1,54 +1,57 @@
-"use client";
-
-import { FilterJob } from "@/components/FilterJob";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import RecruiterDashboard from "@/components/RecruiterDashboard";
-import axios from "axios";
-
+"use client"
+import AuthForm from "@/components/AuthForm";
+import { FeaturesSection } from "@/components/FeaturesSection";
+import { Footer } from "@/components/Footer";
+import HeroSection from "@/components/HeroSection";
+import { CrossIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import StudentDashboard from "@/components/StudentDashboard";
-import { Job } from "@prisma/client";
 
 export default function Home() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const [jobs, setJobs] = useState<Job[]>();
+  const [isAuthFormClicked, setIsAuthFormClicked] = useState<boolean>(false);
+  const [isLearningClicked, setIsLearningClicked] = useState<boolean>(false)
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
+    if (isAuthFormClicked) {
+      if (typeof window === 'object') {
+      document.body.classList.add("overflow-hidden");
+      }
+    } else {
+      if (typeof window === 'object') {
+      document.body.classList.remove("overflow-hidden");
+      }
     }
-  }, [status, router]);
-
-  useEffect(() => {
-    const getAllJobs = async () => {
-      try {
-        const res = await axios.get("/api/student/get-all-jobs");
-        setJobs(res?.data?.data);
-        console.log(res?.data?.data);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
+    return () => {
+      if (typeof window === 'object') {
+      document.body.classList.remove("overflow-hidden");
       }
     };
-
-    if (status === "authenticated" && session?.user?.role === "STUDENT") {
-      getAllJobs();
-    }
-  }, [status, session]);
-
-  // Render loading while session is being fetched
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+  }, [isAuthFormClicked]);
 
   return (
-    <main className="w-full min-h-screen bg-[#08040b]">
-      {session?.user?.role === "STUDENT" && <FilterJob />}
-      <div className="container mx-auto">
-        {session?.user?.role === "RECRUITER" && <RecruiterDashboard />}
-        {session?.user?.role === "STUDENT" && <StudentDashboard jobs={jobs} />}
+    <div className="min-h-screen bg-[#08040b] text-white">
+      <div className="container mx-auto h-full w-full">
+        <HeroSection
+          isAuthFormClicked={isAuthFormClicked}
+          setIsAuthFormClicked={setIsAuthFormClicked}
+          setIsLearningClicked={setIsLearningClicked}
+        />
+        <FeaturesSection/>
+        <Footer />
       </div>
-    </main>
+      {isAuthFormClicked && (
+  <div className="modal-overlay">
+    <div className="relative w-full bg-blur-md p-8 rounded-lg shadow-xl">
+    <AuthForm isLearningClicked={isLearningClicked} />
+      <button
+        onClick={() => setIsAuthFormClicked(false)}
+        className="absolute top-[24%] right-[35%] text-gray-400 hover:text-white"
+      >
+        <CrossIcon className="rotate-180"/>
+      </button>
+    </div>
+  </div>
+)}
+
+    </div>
   );
 }
